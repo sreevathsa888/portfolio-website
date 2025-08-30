@@ -1,7 +1,5 @@
 # Oleti Sree Vathsa - Digital Odyssey Portfolio
 
-[![Website](https://portfolio-website-phi-lyart-90.vercel.app/)
-
 Welcome to the mission control for my personal portfolio, a digital odyssey charting my journey through the universe of technology. This is a fully responsive, single-page website built from scratch with a futuristic, sci-fi aesthetic.
 
 <img width="1919" height="908" alt="image" src="https://github.com/user-attachments/assets/3a9ac517-55f1-47bd-932b-cd7cfd9959b4" />
