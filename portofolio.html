@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oleti Sree Vathsa | Digital Odyssey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-font: 'Orbitron', sans-serif;
+            --secondary-font: 'Exo 2', sans-serif;
+            --bg-color: #020412;
+            --primary-glow: #00d9ff;
+            --secondary-glow: #a855f7;
+            --text-color: #d1d5db;
+            --card-bg: rgba(16, 19, 41, 0.5);
+            --border-color: rgba(0, 217, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--secondary-font);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-glow);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00bfff;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .cursor-trail {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-glow);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease-out, transform 0.1s ease-out;
+            box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-glow);
+        }
+
+        body:hover .cursor-trail {
+            opacity: 1;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 26, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-logo {
+            font-family: var(--primary-font);
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            text-shadow: 0 0 5px var(--primary-glow);
+        }
+
+        .nav-menu { display: flex; list-style: none; }
+        .nav-item { margin-left: 2rem; }
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        .nav-link:hover {
+            color: var(--primary-glow);
+            text-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        .hamburger { display: none; cursor: pointer; }
+        .bar { display: block; width: 25px; height: 3px; margin: 5px auto; transition: all 0.3s ease-in-out; background-color: var(--text-color); }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .hero-content { animation: fadeIn 2s ease-in-out; }
+        .hero-title {
+            font-family: var(--primary-font);
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 15px var(--primary-glow), 0 0 25px var(--primary-glow);
+        }
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            margin-top: 1rem;
+        }
+        .role-cycler { color: var(--primary-glow); font-weight: 600; }
+        .cta-button {
+            display: inline-block;
+            margin-top: 2.5rem;
+            padding: 14px 35px;
+            border: 2px solid var(--primary-glow);
+            border-radius: 8px;
+            color: var(--primary-glow);
+            background: transparent;
+            text-decoration: none;
+            font-family: var(--primary-font);
+            font-size: 1.2rem;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        .cta-button:hover {
+            background: rgba(0, 217, 255, 0.1);
+            box-shadow: 0 0 15px var(--primary-glow);
+            animation: none;
+        }
+
+        .content-section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .content-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section-title {
+            font-family: var(--primary-font);
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            text-align: center;
+            margin-bottom: 4rem;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+        
+        .about-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .about-text h3 {
+             font-family: var(--primary-font);
+             color: var(--primary-glow);
+             margin-bottom: 1rem;
+             margin-top: 2rem;
+             font-size: 1.5rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 25px rgba(0, 217, 255, 0.4);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        .card:hover::before {
+            left: 100%;
+        }
+        .card h3 {
+            font-family: var(--primary-font);
+            color: var(--primary-glow);
+            margin-bottom: 1rem;
+        }
+        .tech-stack { margin: 1.5rem 0; }
+        .tech-stack span {
+            display: inline-block;
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--primary-glow);
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            margin: 5px 5px 0 0;
+            font-weight: 500;
+        }
+        .project-links a, .contact-button {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-right: 10px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+        }
+        .project-links a:hover, .contact-button:hover {
+            color: var(--primary-glow);
+            border-color: var(--primary-glow);
+            background: rgba(0, 217, 255, 0.1);
+            box-shadow: 0 0 8px var(--primary-glow);
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            background: linear-gradient(to bottom, transparent, var(--primary-glow), transparent);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1.5px;
+        }
+        .timeline-item { padding: 10px 40px; position: relative; width: 50%; }
+        .timeline-item:nth-child(odd) { left: 0; }
+        .timeline-item:nth-child(even) { left: 50%; }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: var(--bg-color);
+            border: 4px solid var(--primary-glow);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+        .timeline-item:nth-child(even)::after { left: -10px; }
+        .timeline-content { padding: 20px 30px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); }
+        .timeline-content h3 { font-family: var(--primary-font); color: var(--primary-glow); }
+        .timeline-content p { font-weight: 600; margin-bottom: 0.5rem;}
+        .timeline-content ul { list-style-position: inside; padding-left: 10px; font-size: 0.95rem; }
+        
+        .accolades-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .accolades-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+        .accolades-list li::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            color: var(--primary-glow);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .contact-subtitle { text-align: center; margin-bottom: 2rem; font-size: 1.1rem; }
+        .contact-info { text-align: center; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 217, 255, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 217, 255, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 217, 255, 0.4); }
+        }
+
+        @media(max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 5rem;
+                flex-direction: column;
+                background-color: var(--bg-color);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                padding-bottom: 2rem;
+            }
+            .nav-menu.active { left: 0; }
+            .nav-item { margin: 1.5rem 0; }
+            .hamburger { display: block; }
+            .hamburger.active .bar:nth-child(2) { opacity: 0; }
+            .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+            
+            .timeline::after { left: 31px; }
+            .timeline-item { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .timeline-item:nth-child(odd), .timeline-item:nth-child(even) { left: 0; }
+            .timeline-item::after { left: 21px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="cursor-trail"></div>
+
+    <header>
+        <nav class="navbar">
+            <a href="#home" class="nav-logo">OSV</a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#about" class="nav-link">Flight Log</a></li>
+                <li class="nav-item"><a href="#experience" class="nav-link">Mission History</a></li>
+                <li class="nav-item"><a href="#projects" class="nav-link">Constellations</a></li>
+                <li class="nav-item"><a href="#skills" class="nav-link">Tech Arsenal</a></li>
+                <li class="nav-item"><a href="#accolades" class="nav-link">Accolades</a></li>
+                <li class="nav-item"><a href="#contact" class="nav-link">Comm-Link</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">OLETI SREE VATHSA</h1>
+                <p class="hero-subtitle">
+                    Crafting Tomorrow's Solutions as a <span class="role-cycler">Data Scientist</span>
+                </p>
+                <a href="#projects" class="cta-button">EXPLORE MISSIONS</a>
+            </div>
+        </section>
+
+        <section id="about" class="content-section">
+            <h2 class="section-title">Flight Log</h2>
+            <div class="about-container">
+                <div class="about-text">
+                    <h3>Commander's Profile</h3>
+                    <p>
+                        A dedicated B.Tech Data Science student at Vellore Institute of Technology (CGPA: 8.85), passionate about the intersection of data, development, and management. My mission is to engineer intelligent, scalable solutions and lead high-impact teams across the tech universe. From machine learning explorations with Amazon to full-stack development, my journey is fueled by a relentless drive for innovation and excellence.
+                    </p>
+                    <h3>Education Trajectory</h3>
+                    <p><strong>B.Tech in Computer Science & Engineering (Data Science)</strong> | Vellore Institute of Technology (2023 - 2027)</p>
+                    <p><strong>Intermediate (MPC)</strong> | Sri Chaitanya Junior College (97%)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="content-section">
+            <h2 class="section-title">Mission History</h2>
+            <div class="timeline" id="experience-timeline">
+            </div>
+        </section>
+
+        <section id="projects" class="content-section">
+            <h2 class="section-title">Constellations</h2>
+            <div class="card-grid" id="project-grid">
+            </div>
+        </section>
+
+        <section id="skills" class="content-section">
+            <h2 class="section-title">Tech Arsenal</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Languages</h3>
+                    <p>Python, Java, C, C++, SQL, JavaScript, HTML/CSS</p>
+                </div>
+                <div class="card">
+                    <h3>Frameworks & Libraries</h3>
+                    <p>React, Flask, Pandas, NumPy, Matplotlib</p>
+                </div>
+                <div class="card">
+                    <h3>Databases & Tools</h3>
+                    <p>MySQL, Git, Google Cloud Platform (GCP), Vercel, VS Code</p>
+                </div>
+                <div class="card">
+                    <h3>Management & Leadership</h3>
+                    <p>Project Management, Team Leadership, Strategic Planning, Technical Recruitment</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="accolades" class="content-section">
+            <h2 class="section-title">Accolades & Certifications</h2>
+            <div class="card-grid" id="accolades-grid">
+            </div>
+        </section>
+
+        <section id="contact" class="content-section">
+            <h2 class="section-title">Comm-Link</h2>
+            <p class="contact-subtitle">Ready to collaborate on the next mission? Send a transmission.</p>
+            <div class="contact-info">
+                <a href="mailto:sreevathsaoleti88@gmail.com" class="contact-button">Email</a>
+                <a href="https://linkedin.com/in/sree-vathsa-oleti" target="_blank" class="contact-button">LinkedIn</a>
+                <a href="https://github.com/sreevathsa888" target="_blank" class="contact-button">GitHub</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Oleti Sree Vathsa. All systems operational.</p>
+    </footer>
+
+    <script>
+    (function() {
+        'use strict';
+
+        const experienceData = [
+            {
+                role: 'Amazon ML Summer School Participant',
+                company: 'Amazon',
+                date: 'Aug 2025 - Present',
+                details: ['Selected for an exclusive program focusing on key machine learning topics and their practical applications at Amazon.']
+            },
+            {
+                role: 'Web Development Intern',
+                company: 'Pinnacle Labs',
+                date: 'Jul 2025 - Present',
+                details: []
+            },
+            {
+                role: 'GirlScript Summer of Code Contributor',
+                company: 'GirlScript Foundation',
+                date: 'Jul 2025 - Present',
+                details: ['Contributing to open-source projects, focusing on web development and problem-solving.']
+            },
+            {
+                role: 'HR Manager',
+                company: 'Aarvasa Innovations Pvt. Ltd',
+                date: 'Jan 2025 - Present',
+                details: [
+                    'Reduced time-to-hire by 25% by streamlining technical recruiting processes.',
+                    'Increased employee engagement survey scores by 15% through new initiatives.'
+                ]
+            },
+             {
+                role: 'Marketing Intern',
+                company: 'Keyncoders',
+                date: 'Nov 2024',
+                details: ['Increased user engagement by over 30% across social media platforms by developing and executing targeted marketing campaigns.']
+            },
+            {
+                role: 'Management Intern',
+                company: 'Sentinel Guard AI',
+                date: 'Sep 2024',
+                details: [
+                    'Led a cross-functional team of 5 to deliver a key AI-driven security solution 2 weeks ahead of schedule.'
+                ]
+            }
+        ];
+
+        const projectData = [
+            {
+                title: 'AI-Powered Email Generator',
+                description: 'Engineered a full-stack tool using React, Python/Flask, and the Google Gemini Pro API to draft and send professional emails from simple user prompts.',
+                tags: ['React', 'Python', 'Flask', 'Gemini API'],
+                liveLink: '#',
+                sourceLink: 'https://github.com/sreevathsa888'
+            },
+            {
+                title: 'VIST College Website',
+                description: 'Developed a fully responsive and visually appealing website for a conceptual university, showcasing academic programs and admission workflows.',
+                tags: ['HTML', 'CSS', 'JavaScript', 'Vercel'],
+                liveLink: '#',
+                sourceLink: 'https://github.com/sreevathsa888'
+            }
+        ];
+
+        const accoladesData = [
+            {
+                title: 'Technical & Academic Awards',
+                items: [
+                    'Track Winner, GENHACK Hackathon',
+                    'Third Place (2 events), Yantra 2025 Technical Fest',
+                    'Recognized for 100% attendance for two consecutive academic years'
+                ]
+            },
+            {
+                title: 'Key Certifications',
+                items: [
+                    'GenAI (IBM)',
+                    'Data Science (IIT Bombay)',
+                    'Remote Sensing (ISRO)',
+                    'SEBI Investor Awareness'
+                ]
+            },
+            {
+                title: 'Leadership Roles',
+                items: [
+                    'Campus Ambassador (IIT Bombay Techfest & IIT Madras Saarang)',
+                    'Management Executive (Sahiti)'
+                ]
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initMobileNav();
+            initRoleCycler();
+            initScrollAnimations();
+            initCursorTrail();
+            initParticleCanvas();
+            populateExperience();
+            populateProjects();
+            populateAccolades();
+        });
+
+        function initMobileNav() {
+            const hamburger = document.querySelector(".hamburger");
+            const navMenu = document.querySelector(".nav-menu");
+
+            hamburger.addEventListener("click", () => {
+                hamburger.classList.toggle("active");
+                navMenu.classList.toggle("active");
+            });
+
+            document.querySelectorAll(".nav-link").forEach(n => n.addEventListener("click", () => {
+                hamburger.classList.remove("active");
+                navMenu.classList.remove("active");
+            }));
+        }
+
+        function initRoleCycler() {
+            const roles = ["Data Scientist", "Web Developer", "Technology Leader"];
+            let roleIndex = 0;
+            const roleElement = document.querySelector('.role-cycler');
+            if (!roleElement) return;
+
+            setInterval(() => {
+                roleIndex = (roleIndex + 1) % roles.length;
+                roleElement.style.opacity = 0;
+                setTimeout(() => {
+                    roleElement.textContent = roles[roleIndex];
+                    roleElement.style.opacity = 1;
+                }, 300);
+            }, 3000);
+        }
+
+        function initScrollAnimations() {
+            const sections = document.querySelectorAll('.content-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => observer.observe(section));
+        }
+
+        function initCursorTrail() {
+            const trail = document.querySelector('.cursor-trail');
+            if (!trail) return;
+
+            window.addEventListener('mousemove', e => {
+                trail.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            });
+        }
+
+        function populateExperience() {
+            const timeline = document.getElementById('experience-timeline');
+            if (!timeline) return;
+
+            let content = '';
+            experienceData.forEach(item => {
+                let detailsList = '';
+                if (item.details.length > 0) {
+                    detailsList = `<ul>${item.details.map(d => `<li>${d}</li>`).join('')}</ul>`;
+                }
+                
+                content += `
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h3>${item.role}</h3>
+                            <p>${item.company} (${item.date})</p>
+                            ${detailsList}
+                        </div>
+                    </div>
+                `;
+            });
+            timeline.innerHTML = content;
+        }
+
+        function populateProjects() {
+            const grid = document.getElementById('project-grid');
+            if (!grid) return;
+            
+            let content = '';
+            projectData.forEach(project => {
+                const tagsHtml = project.tags.map(tag => `<span>${tag}</span>`).join('');
+                content += `
+                    <div class="card">
+                        <h3>${project.title}</h3>
+                        <p>${project.description}</p>
+                        <div class="tech-stack">${tagsHtml}</div>
+                        <div class="project-links">
+                            <a href="${project.liveLink}" target="_blank" rel="noopener noreferrer">Live System</a>
+                            <a href="${project.sourceLink}" target="_blank" rel="noopener noreferrer">Source Code</a>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = content;
+        }
+        
+        function populateAccolades() {
+            const grid = document.getElementById('accolades-grid');
+            if (!grid) return;
+            
+            let content = '';
+            accoladesData.forEach(category => {
+                const itemsHtml = category.items.map(item => `<li>${item}</li>`).join('');
+                content += `
+                    <div class="card">
+                        <h3>${category.title}</h3>
+                        <ul class="accolades-list">${itemsHtml}</ul>
+                    </div>
+                `;
+            });
+            grid.innerHTML = content;
+        }
+
+        function initParticleCanvas() {
+            const canvas = document.getElementById('particle-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            
+            const setCanvasSize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+
+            const createParticles = () => {
+                particles = [];
+                const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 1.5 + 0.5,
+                        vx: (Math.random() - 0.5) * 0.3,
+                        vy: (Math.random() - 0.5) * 0.3
+                    });
+                }
+            };
+            
+            const drawParticles = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'rgba(209, 213, 219, 0.8)';
+                
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                });
+
+                requestAnimationFrame(drawParticles);
+            };
+
+            setCanvasSize();
+            createParticles();
+            drawParticles();
+            
+            window.addEventListener('resize', () => {
+                setCanvasSize();
+                createParticles();
+            });
+        }
+    })();
+    </script>
+</body>
+</html>
+
