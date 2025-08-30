@@ -1,6 +1,6 @@
 # Oleti Sree Vathsa - Digital Odyssey Portfolio
 
-[![Website](https://portfolio-website-25qou5xpw-sree-vathsas-projects-a6090a0c.vercel.app/)
+[![Website](https://portfolio-website-phi-lyart-90.vercel.app/)
 
 Welcome to the mission control for my personal portfolio, a digital odyssey charting my journey through the universe of technology. This is a fully responsive, single-page website built from scratch with a futuristic, sci-fi aesthetic.
 
