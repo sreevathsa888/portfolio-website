@@ -1,14 +1,12 @@
 # Oleti Sree Vathsa - Digital Odyssey Portfolio
 
-[![Website](https://img.shields.io/badge/Website-Live_Demo-blue?style=for-the-badge&logo=vercel)](https://your-vercel-link.app)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Website](https://portfolio-website-25qou5xpw-sree-vathsas-projects-a6090a0c.vercel.app/)
 
 Welcome to the mission control for my personal portfolio, a digital odyssey charting my journey through the universe of technology. This is a fully responsive, single-page website built from scratch with a futuristic, sci-fi aesthetic.
 
-![Portfolio Screenshot](./screenshot.png)
-*(**Note:** You'll need to take a screenshot of your website, name it `screenshot.png`, and add it to your repository for the image to show up here.)*
+<img width="1919" height="908" alt="image" src="https://github.com/user-attachments/assets/3a9ac517-55f1-47bd-932b-cd7cfd9959b4" />
 
----
+
 
 ## ✨ Features
 
